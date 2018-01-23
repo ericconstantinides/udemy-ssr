@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
+import reducers from '../client/reducers'
 
 // we want to create the Store here entirely *before* rendering
 // that's why we don't have a "Provider" here.
@@ -7,6 +8,6 @@ import thunk from 'redux-thunk'
 
 export default () => {
   const store = createStore(reducers, {}, applyMiddleware(thunk))
-  
+
   return store
 }

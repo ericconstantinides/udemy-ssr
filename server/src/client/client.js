@@ -11,6 +11,7 @@ import thunk from 'redux-thunk'
 // Provider is a React Component
 import { Provider } from 'react-redux'
 import Routes from './Routes'
+import reducers from './reducers'
 
 // create the store (reducers, initial state, middleware):
 const store = createStore(reducers, {}, applyMiddleware(thunk))
