@@ -2418,7 +2418,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // createStore creates the store.
 // applyMiddleware hooks up middleware to redux
 // startup for the client-side app
-var store = (0, _redux.createStore)(_reducers2.default, {}, (0, _redux.applyMiddleware)(_reduxThunk2.default));
+var store = (0, _redux.createStore)(_reducers2.default, window.INITIAL_STATE || {}, (0, _redux.applyMiddleware)(_reduxThunk2.default));
 
 // wrap the store with the Provider component
 

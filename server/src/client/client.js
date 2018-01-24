@@ -17,7 +17,11 @@ import Routes from './Routes'
 import reducers from './reducers'
 
 // create the store (reducers, initial state, middleware):
-const store = createStore(reducers, {}, applyMiddleware(thunk))
+const store = createStore(
+  reducers,
+  window.INITIAL_STATE || {},
+  applyMiddleware(thunk)
+)
 
 // wrap the store with the Provider component
 hydrate(

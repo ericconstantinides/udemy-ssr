@@ -4,6 +4,8 @@ import { StaticRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 // renderRoutes takes an array of routes and turns it into JSX
 import { renderRoutes } from 'react-router-config'
+// Serialize JavaScript to a superset of JSON that includes regular expressions, dates and functions. Also, kills naughty <script> tags injections (XSS)
+import serialize from 'serialize-javascript'
 import Routes from '../client/Routes'
 
 export default (req, store) => {
@@ -20,6 +22,10 @@ export default (req, store) => {
       <head></head>
       <body>
         <div id='root'>${content}</div>
+        <script>
+          // share the love with the client:
+          window.INITIAL_STATE = ${serialize(store.getState())}
+        </script>
         <script src="bundle.js"></script>
       </body>
     </html>
