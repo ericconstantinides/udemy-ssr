@@ -1,14 +1,14 @@
 import React from 'react'
 
-const home = () => {
+const Home = () => {
   return (
     <div>
       <div>
-        I'm the home Component Yay
+        I'm the Home Component Yay
       </div>
       <button onClick={() => console.log('hi there')}>Press me</button>
     </div>
   )
 }
 
-export default home
+export default Home

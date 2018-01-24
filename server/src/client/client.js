@@ -11,6 +11,8 @@ import thunk from 'redux-thunk'
 // Provider ties the store and the react app together
 // Provider is a React Component
 import { Provider } from 'react-redux'
+// renderRoutes takes an array of routes and turns it into JSX
+import { renderRoutes } from 'react-router-config'
 import Routes from './Routes'
 import reducers from './reducers'
 
@@ -21,7 +23,7 @@ const store = createStore(reducers, {}, applyMiddleware(thunk))
 hydrate(
   <Provider store={store}>
     <BrowserRouter>
-      <Routes />
+      <div>{renderRoutes(Routes)}</div>
     </BrowserRouter>
   </Provider>,
   document.getElementById('root')

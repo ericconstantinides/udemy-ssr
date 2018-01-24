@@ -88,6 +88,12 @@ var _express = __webpack_require__(3);
 
 var _express2 = _interopRequireDefault(_express);
 
+var _reactRouterConfig = __webpack_require__(18);
+
+var _Routes = __webpack_require__(6);
+
+var _Routes2 = _interopRequireDefault(_Routes);
+
 var _renderer = __webpack_require__(4);
 
 var _renderer2 = _interopRequireDefault(_renderer);
@@ -98,16 +104,51 @@ var _createStore2 = _interopRequireDefault(_createStore);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
 var app = (0, _express2.default)();
 
 // Make the public directory available for your browser to fully access as root:
 app.use(_express2.default.static('public'));
 
-app.get('*', function (req, res) {
-  var store = (0, _createStore2.default)();
-  // logic to init and load data into store:
-  res.send((0, _renderer2.default)(req, store));
-});
+// make the function an async function
+app.get('*', function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res) {
+    var store, promises;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            store = (0, _createStore2.default)();
+            // logic to init and load data into store:
+
+            promises = (0, _reactRouterConfig.matchRoutes)(_Routes2.default, req.path).map(function (_ref2) {
+              var route = _ref2.route;
+
+              // load all the loadData functions we have (all return promises):
+              return route.loadData ? route.loadData(store) : null;
+            });
+
+            // await for all the promises to finish before rendering:
+
+            _context.next = 4;
+            return Promise.all(promises);
+
+          case 4:
+            res.send((0, _renderer2.default)(req, store));
+
+          case 5:
+          case 'end':
+            return _context.stop();
+        }
+      }
+    }, _callee, undefined);
+  }));
+
+  return function (_x, _x2) {
+    return _ref.apply(this, arguments);
+  };
+}());
 
 app.listen(3000, function () {
   console.log('Listening on port 3000');
@@ -140,12 +181,15 @@ var _reactRouterDom = __webpack_require__(1);
 
 var _reactRedux = __webpack_require__(8);
 
+var _reactRouterConfig = __webpack_require__(18);
+
 var _Routes = __webpack_require__(6);
 
 var _Routes2 = _interopRequireDefault(_Routes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// renderRoutes takes an array of routes and turns it into JSX
 exports.default = function (req, store) {
   var content = (0, _server.renderToString)(_react2.default.createElement(
     _reactRedux.Provider,
@@ -153,7 +197,11 @@ exports.default = function (req, store) {
     _react2.default.createElement(
       _reactRouterDom.StaticRouter,
       { location: req.path, context: {} },
-      _react2.default.createElement(_Routes2.default, null)
+      _react2.default.createElement(
+        'div',
+        null,
+        (0, _reactRouterConfig.renderRoutes)(_Routes2.default)
+      )
     )
   ));
   // this is where all the magic begins:
@@ -177,15 +225,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _react = __webpack_require__(0);
+var _Home = __webpack_require__(19);
 
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRouterDom = __webpack_require__(1);
-
-var _home = __webpack_require__(7);
-
-var _home2 = _interopRequireDefault(_home);
+var _Home2 = _interopRequireDefault(_Home);
 
 var _UsersList = __webpack_require__(16);
 
@@ -193,54 +235,30 @@ var _UsersList2 = _interopRequireDefault(_UsersList);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = function () {
-  return _react2.default.createElement(
-    'div',
-    null,
-    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _home2.default }),
-    _react2.default.createElement(_reactRouterDom.Route, { path: '/users', component: _UsersList2.default })
-  );
-};
+// OLD WAY:
+/* export default () => {
+  return (
+    <div>
+      <Route exact path='/' component={Home} />
+      <Route path='/users' component={UsersList} />
+    </div>
+  )
+} */
+
+// NEW WAY for SSR!
+// import React from 'react'
+exports.default = [{
+  path: '/',
+  component: _Home2.default,
+  exact: true
+}, {
+  loadData: _UsersList.loadData,
+  path: '/users',
+  component: _UsersList2.default
+}];
 
 /***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var home = function home() {
-  return _react2.default.createElement(
-    'div',
-    null,
-    _react2.default.createElement(
-      'div',
-      null,
-      'I\'m the home Component Yay'
-    ),
-    _react2.default.createElement(
-      'button',
-      { onClick: function onClick() {
-          return console.log('hi there');
-        } },
-      'Press me'
-    )
-  );
-};
-
-exports.default = home;
-
-/***/ }),
+/* 7 */,
 /* 8 */
 /***/ (function(module, exports) {
 
@@ -411,6 +429,7 @@ module.exports = require("axios");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.loadData = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -482,6 +501,13 @@ var mapStateToProps = function mapStateToProps(_ref) {
   var users = _ref.users;
   return { users: users };
 };
+
+// this is what we use for SSR to load data
+var loadData = exports.loadData = function loadData(store) {
+  // this returns a promise()
+  return store.dispatch((0, _actions.fetchUsers)());
+};
+
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchUsers: _actions.fetchUsers })(UsersList);
 
 /***/ }),
@@ -489,6 +515,50 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchUsers: _actio
 /***/ (function(module, exports) {
 
 module.exports = require("babel-polyfill");
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+module.exports = require("react-router-config");
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Home = function Home() {
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(
+      'div',
+      null,
+      'I\'m the Home Component Yay'
+    ),
+    _react2.default.createElement(
+      'button',
+      { onClick: function onClick() {
+          return console.log('hi there');
+        } },
+      'Press me'
+    )
+  );
+};
+
+exports.default = Home;
 
 /***/ })
 /******/ ]);

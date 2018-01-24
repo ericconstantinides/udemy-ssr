@@ -21,4 +21,11 @@ class UsersList extends Component {
   }
 }
 const mapStateToProps = ({ users }) => ({ users })
+
+// this is what we use for SSR to load data
+export const loadData = store => {
+  // this returns a promise()
+  return store.dispatch(fetchUsers())
+}
+
 export default connect(mapStateToProps, { fetchUsers })(UsersList)
