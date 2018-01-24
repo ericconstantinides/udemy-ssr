@@ -82,6 +82,8 @@ module.exports = require("react-router-dom");
 "use strict";
 
 
+__webpack_require__(17);
+
 var _express = __webpack_require__(3);
 
 var _express2 = _interopRequireDefault(_express);
@@ -104,7 +106,6 @@ app.use(_express2.default.static('public'));
 app.get('*', function (req, res) {
   var store = (0, _createStore2.default)();
   // logic to init and load data into store:
-
   res.send((0, _renderer2.default)(req, store));
 });
 
@@ -186,13 +187,18 @@ var _home = __webpack_require__(7);
 
 var _home2 = _interopRequireDefault(_home);
 
+var _UsersList = __webpack_require__(16);
+
+var _UsersList2 = _interopRequireDefault(_UsersList);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = function () {
   return _react2.default.createElement(
     'div',
     null,
-    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _home2.default })
+    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _home2.default }),
+    _react2.default.createElement(_reactRouterDom.Route, { path: '/users', component: _UsersList2.default })
   );
 };
 
@@ -213,14 +219,14 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Home = function Home() {
+var home = function home() {
   return _react2.default.createElement(
     'div',
     null,
     _react2.default.createElement(
       'div',
       null,
-      'I\'m the Home Component Yay'
+      'I\'m the home Component Yay'
     ),
     _react2.default.createElement(
       'button',
@@ -232,7 +238,7 @@ var Home = function Home() {
   );
 };
 
-exports.default = Home;
+exports.default = home;
 
 /***/ }),
 /* 8 */
@@ -354,6 +360,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 var USERS_FETCH = exports.USERS_FETCH = 'USERS_FETCH';
+// async dispatch requires babel-polyfill to have a regenerator runtime defined:
 var fetchUsers = exports.fetchUsers = function fetchUsers() {
   return function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(dispatch) {
@@ -393,6 +400,95 @@ var fetchUsers = exports.fetchUsers = function fetchUsers() {
 /***/ (function(module, exports) {
 
 module.exports = require("axios");
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(8);
+
+var _actions = __webpack_require__(14);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var UsersList = function (_Component) {
+  _inherits(UsersList, _Component);
+
+  function UsersList() {
+    _classCallCheck(this, UsersList);
+
+    return _possibleConstructorReturn(this, (UsersList.__proto__ || Object.getPrototypeOf(UsersList)).apply(this, arguments));
+  }
+
+  _createClass(UsersList, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.props.fetchUsers();
+    }
+  }, {
+    key: 'renderUsers',
+    value: function renderUsers() {
+      return this.props.users.map(function (user) {
+        return _react2.default.createElement(
+          'li',
+          { key: user.id },
+          user.name
+        );
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'h1',
+          null,
+          'UsersList'
+        ),
+        _react2.default.createElement(
+          'ul',
+          null,
+          this.renderUsers()
+        )
+      );
+    }
+  }]);
+
+  return UsersList;
+}(_react.Component);
+
+var mapStateToProps = function mapStateToProps(_ref) {
+  var users = _ref.users;
+  return { users: users };
+};
+exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchUsers: _actions.fetchUsers })(UsersList);
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
+
+module.exports = require("babel-polyfill");
 
 /***/ })
 /******/ ]);
