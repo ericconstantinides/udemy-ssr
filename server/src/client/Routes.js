@@ -1,13 +1,13 @@
 // import React from 'react'
-import Home from './components/Home'
-import UsersList, { loadData } from './components/UsersList'
+import HomePage from './pages/HomePage'
+import UsersListPage from './pages/UsersListPage'
 
 // OLD WAY:
 /* export default () => {
   return (
     <div>
-      <Route exact path='/' component={Home} />
-      <Route path='/users' component={UsersList} />
+      <Route exact path='/' component={HomePage} />
+      <Route path='/users' component={UsersListPage} />
     </div>
   )
 } */
@@ -15,13 +15,12 @@ import UsersList, { loadData } from './components/UsersList'
 // NEW WAY for SSR!
 export default [
   {
+    ...HomePage,
     path: '/',
-    component: Home,
     exact: true
   },
   {
-    loadData,
-    path: '/users',
-    component: UsersList
+    ...UsersListPage,
+    path: '/users'
   }
 ]
